@@ -9,6 +9,11 @@
 
 import {Plugin} from 'ckeditor5/src/core';
 import MorphemCommand from "./command";
+import MorphemBaseCommand from "./commandBase";
+import MorphemPrefixCommand from "./commandPrefix";
+import MorphemRootCommand from "./commandRoot";
+import MorphemSuffixCommand from "./commandSuffix";
+import MorphemEndingCommand from "./commandEnding";
 
 /**
  * The editing feature.
@@ -30,12 +35,40 @@ export default class MorphemEditing extends Plugin {
 
     // Attaching the command to the editor.
     editor.commands.add(
-      'morphem',
+      'morphemCommand',
       new MorphemCommand(this.editor),
     );
 
+    editor.commands.add(
+      'morphemBaseCommand',
+      new MorphemBaseCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemPrefixCommand',
+      new MorphemPrefixCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemRootCommand',
+      new MorphemRootCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemSuffixCommand',
+      new MorphemSuffixCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemEndingCommand',
+      new MorphemEndingCommand(this.editor),
+    );
+
+
+
+
     editor.model.document.on('change:data', () => {
-      this._removeEmptySpans(editor, editor.model.document.getRoot());
+//      this._removeEmptySpans(editor, editor.model.document.getRoot());
     });
   }
 
@@ -65,12 +98,11 @@ export default class MorphemEditing extends Plugin {
    */
   _defineSchema() {
     const schema = this.editor.model.schema;
-    const textFormatSettings = this.editor.config.get('morphem')
 
     // parent element.
     schema.register('morphem', {
       allowIn: [ 'paragraph' ],
-      inheritAllFrom: '$inlineObject',
+      inheritAllFrom: '$inline',
 
       isInline: true,
       isObject: false,
@@ -80,12 +112,104 @@ export default class MorphemEditing extends Plugin {
         'modelClass',
       ],
       allowChildren: [
+        '$inline',
         '$text',
         'morphemBase',
         'morphemEnding',
-        'morphemBasePart', // root, suffix, prefix
+        'morphemRoot',
+        'morphemPrefix',
+        'morphemSuffix',
       ],
     });
+
+
+    // base element.
+    schema.register('morphemBase', {
+      allowIn: [ 'morphem' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [],
+      allowChildren: [
+        '$inline',
+        '$text',
+        'morphemRoot',
+        'morphemPrefix',
+        'morphemSuffix',
+      ],
+    });
+
+    // ending
+    schema.register('morphemEnding', {
+      allowIn: [ 'morphem' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+      ],
+    });
+
+    // morphemPrefix
+    schema.register('morphemPrefix', {
+      allowIn: [ 'morphem', 'morphemBase' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+      ],
+    });
+
+    // morphemSuffix
+    schema.register('morphemSuffix', {
+      allowIn: [ 'morphem', 'morphemBase' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+      ],
+    });
+
+    // morphemRoot
+    schema.register('morphemRoot', {
+      allowIn: [ 'morphem', 'morphemBase' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+      ],
+    });
+
   }
 
   /**
@@ -95,7 +219,7 @@ export default class MorphemEditing extends Plugin {
     const {conversion} = this.editor;
     const textFormatSettings = this.editor.config.get('morphem')
 
-    // bButton. View -> Model.
+    // Morphem. View -> Model.
     conversion.for('upcast').elementToElement({
       view: {
         name: 'span',
@@ -106,7 +230,7 @@ export default class MorphemEditing extends Plugin {
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
-        // Do not convert if the link does not have the 'btn' class.
+
         let classes = viewElement.getAttribute('class');
         if (!classes) {
            return null;
@@ -126,12 +250,201 @@ export default class MorphemEditing extends Plugin {
       model: 'morphem',
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
-          'class': modelElement.getAttribute('modelClass'),
+          'class': textFormatSettings.morphemClass,
         };
         return writer.createContainerElement('span', htmlAttrs );
       }
     });
 
+    /************ BASE ************/
+
+    // morphemBase. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'base' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemBase', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemBase',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'base',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+    /************ PREFIX ************/
+
+    // morphemPrefix. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'prefix' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemPrefix', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemPrefix',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'prefix',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+    /************ ROOT ************/
+
+    // morphemRoot. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'root' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemRoot', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemRoot',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'root',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+    /************ Suffix ************/
+
+    // morphemSuffix. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'suffix' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemsuffix', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemsuffix',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'suffix',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+
+    /************ ENDING ************/
+
+    // morphemEnding. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'ending' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemEnding', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemEnding',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'ending',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
 
   }
 }

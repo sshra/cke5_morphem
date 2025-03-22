@@ -28,7 +28,7 @@ function morphem_help($route_name, RouteMatchInterface $route_match) {
 /**
  * Implements hook_css_alter().
  */
-function cmorphem_css_alter(&$css, AttachedAssetsInterface $assets, LanguageInterface $language) {
+function morphem_css_alter(&$css, AttachedAssetsInterface $assets, LanguageInterface $language) {
 
   if (isset($css['core/modules/ckeditor5/css/editor.css'])) {
     $module = 'morphem';

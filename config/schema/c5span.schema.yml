@@ -1,0 +1,11 @@
+
+# Plugin \Drupal\morphem\Plugin\CKEditor5Plugin\morphem
+ckeditor5.plugin.morphem_morphem:
+  type: mapping
+  label: 'Morphem settings'
+  mapping:
+    morphemClass:
+      type: string
+      label: 'Morphem container class'
+
+

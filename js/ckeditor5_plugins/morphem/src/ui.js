@@ -11,7 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import {
   ButtonView
 } from 'ckeditor5/src/ui';
-import Icon from '../../../icons/bb.svg';
+import Icon from '../../../icons/morphem.svg';
+import IconEnding from '../../../icons/ending.svg';
 
 /**
  * The UI plugin. It introduces the `'bButton'` button and the forms.
@@ -27,27 +28,38 @@ export default class MorphemUI extends Plugin {
    * @inheritDoc
    */
   static get requires() {
-    return [ ContextualBalloon ];
+    return [  ];
   }
 
   /**
    * @inheritDoc
    */
   init() {
-    this._addToolbarButton();
+    this._addToolbarButtons();
 //    this._handleSelection();
   }
 
   /**
-   * Adds the toolbar button.
+   * Adds the toolbar buttons.
    *
    * @private
    */
-  _addToolbarButton() {
+  _addToolbarButtons() {
+
+    this._register_morphem_button();
+    this._register_morphemEnding_button();
+
+  }
+
+  /**
+   * Morphem button
+   */
+  _register_morphem_button() {
     const editor = this.editor;
 
     editor.ui.componentFactory.add('morphem', (locale) => {
       const buttonView = new ButtonView(locale);
+      const textFormatSettings = editor.config.get('morphem');
 
       // Create the toolbar button.
       buttonView.set({
@@ -58,7 +70,7 @@ export default class MorphemUI extends Plugin {
 
       // Bind button to the command.
       // The state on the button depends on the command values.
-      const command = editor.commands.get('morphem');
+      const command = editor.commands.get('morphemCommand');
       buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
       buttonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
@@ -68,13 +80,45 @@ export default class MorphemUI extends Plugin {
         let values = {
           modelClass:  textFormatSettings.morphemClass,
         };
-        this.editor.execute('morphem', values);
+        this.editor.execute('morphemCommand', values);
 
       });
 
       return buttonView;
     });
   }
+
+  /**
+   * Morphem Ending button
+   */
+  _register_morphemEnding_button() {
+    const editor = this.editor;
+
+    editor.ui.componentFactory.add('morphemEnding', (locale) => {
+      const buttonView = new ButtonView(locale);
+
+      // Create the toolbar button.
+      buttonView.set({
+        label: editor.t('Morphem Ending Button'),
+        icon: IconEnding,
+        tooltip: true
+      });
+
+      // Bind button to the command.
+      // The state on the button depends on the command values.
+      const command = editor.commands.get('morphemEndingCommand');
+      buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+      buttonView.bind( 'isOn' ).to( command, 'value', value => !!value );
+
+      // Execute the command when the button is clicked.
+      this.listenTo(buttonView, 'execute', () => {
+        this.editor.execute('morphemEndingCommand', {});
+      });
+
+      return buttonView;
+    });
+  }
+
 
   /**
    * Handles the selection specific cases (right before or after the element).

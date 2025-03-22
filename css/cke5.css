@@ -1,0 +1,29 @@
+.ck.ck-content span.morphem {
+  position: relative;
+  display: inline-block;
+  color: #2b42d0;
+  background: #e0e0e0;
+  white-space: nowrap;
+}
+
+.ck.ck-content span.morphem span.ending {
+  display: inline-block;
+  border: 1px solid #000;
+  padding: 0 2px;
+}
+
+.ck.ck-content span.morphem::before {
+  font-size: 0.5em;
+  content: "[ ";
+  display: inline-block;
+  white-space: nowrap;
+  color: #000;
+}
+
+.ck.ck-content span.morphem::after {
+  font-size: 0.5em;
+  content: " ]";
+  display: inline-block;
+  white-space: nowrap;
+  color: #000;
+}
