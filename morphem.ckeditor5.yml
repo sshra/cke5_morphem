@@ -1,0 +1,18 @@
+morphem_bbutton:
+  ckeditor5:
+    plugins:
+      - morphem.Morphem
+  drupal:
+    label: Morphems CKE5
+    # Drupal library with the plugin JS.
+    library: morphem/morphem
+    admin_library: morphem/admin.styles
+    class: Drupal\c5span\Plugin\CKEditor5Plugin\Morphem
+    # Toolbar button.
+    toolbar_items:
+      Morphem:
+        label: Morphem container
+    elements:
+      - <span>
+      - <span class>
+

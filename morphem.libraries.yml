@@ -1,0 +1,10 @@
+morphem:
+  js:
+    js/build/morphem.js: { preprocess: false, minified: true }
+  dependencies:
+    - core/ckeditor5
+
+admin.styles:
+  css:
+    theme:
+      css/admin-styles.css: { }
