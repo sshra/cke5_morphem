@@ -1,7 +1,18 @@
 .ckeditor5-toolbar-button-Morphem {
-  background-image: url(../js/icons/morphem.svg);
+  background-image: url(../js/icons/morphem-btn.svg);
 }
-
+.ckeditor5-toolbar-button-MorphemBase {
+  background-image: url(../js/icons/base-btn.svg);
+}
+.ckeditor5-toolbar-button-MorphemPrefix {
+  background-image: url(../js/icons/prefix-btn.svg);
+}
+.ckeditor5-toolbar-button-MorphemRoot {
+  background-image: url(../js/icons/root-btn.svg);
+}
+.ckeditor5-toolbar-button-MorphemSuffix {
+  background-image: url(../js/icons/suffix-btn.svg);
+}
 .ckeditor5-toolbar-button-MorphemEnding {
-  background-image: url(../js/icons/ending.svg);
+  background-image: url(../js/icons/ending-btn.svg);
 }

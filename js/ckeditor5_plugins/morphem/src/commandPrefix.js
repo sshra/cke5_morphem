@@ -10,17 +10,17 @@ import MorphemCommand from "./command";
  *
  * @extends module:core/command~Command
  */
-export default class MorphemBaseCommand extends MorphemCommand {
+export default class MorphemPrefixCommand extends MorphemCommand {
 
   /**
    * @inheritDoc
    */
   refresh() {
-    // Base is allowed only inside of 'morphem'
+    // Prefix is allowed only inside of 'morphem'/"morphemBase"
     const selection = this.editor.model.document.selection;
     const position = selection.getFirstPosition();
     let elm = position.parent;
-    const found = this._findByElementName(elm, ['morphem']);
+    const found = this._findByElementName(elm, ['morphem', 'morphemBase']);
 
     this.isEnabled = found !== null;
 
@@ -34,9 +34,10 @@ export default class MorphemBaseCommand extends MorphemCommand {
   execute(values) {
     const editor = this.editor;
     const { model } = editor;
-    const elemName = 'morphemBase';
+    const elemName = 'morphemPrefix';
 
     model.change((writer) => {
+
       const selection = model.document.selection;
       const position = selection.getFirstPosition();
       const selectedContent = model.getSelectedContent(selection);

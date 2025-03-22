@@ -20,7 +20,7 @@ export default class MorphemEndingCommand extends MorphemCommand {
     const selection = this.editor.model.document.selection;
     const position = selection.getFirstPosition();
     let elm = position.parent;
-    const found = this._findByElementName(elm, "morphem");
+    const found = this._findByElementName(elm, ['morphem']);
 
     this.isEnabled = found !== null;
 
@@ -43,7 +43,7 @@ export default class MorphemEndingCommand extends MorphemCommand {
       const selectedContent = model.getSelectedContent(selection);
 
       let elm = position.parent;
-      const found = this._findByElementName(elm, elemName);
+      const found = this._findByElementName(elm, [elemName]);
 
       if (found !== null) {
         // undo element

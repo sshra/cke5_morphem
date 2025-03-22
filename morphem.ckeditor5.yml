@@ -12,8 +12,17 @@ morphem_morphem:
     toolbar_items:
       Morphem:
         label: Morphem container
+      MorphemBase:
+        label: Morphem Base
+      MorphemPrefix:
+        label: Morphem Prefix
+      MorphemRoot:
+        label: Morphem Root
+      MorphemSuffix:
+        label: Morphem Suffix
       MorphemEnding:
         label: Morphem Ending
+
     elements:
       - <span>
       - <span class>

@@ -11,8 +11,12 @@ import { Plugin } from 'ckeditor5/src/core';
 import {
   ButtonView
 } from 'ckeditor5/src/ui';
-import Icon from '../../../icons/morphem.svg';
-import IconEnding from '../../../icons/ending.svg';
+import Icon from '../../../icons/morphem-btn.svg';
+import IconBase from '../../../icons/base-btn.svg';
+import IconPrefix from '../../../icons/prefix-btn.svg';
+import IconRoot from '../../../icons/root-btn.svg';
+import IconSuffix from '../../../icons/suffix-btn.svg';
+import IconEnding from '../../../icons/ending-btn.svg';
 
 /**
  * The UI plugin. It introduces the `'bButton'` button and the forms.
@@ -47,8 +51,12 @@ export default class MorphemUI extends Plugin {
   _addToolbarButtons() {
 
     this._register_morphem_button();
-    this._register_morphemEnding_button();
 
+    this._register_button('morphemBase', 'Morphem Base Button', 'morphemBaseCommand', IconBase);
+    this._register_button('morphemPrefix', 'Morphem Prefix Button', 'morphemPrefixCommand', IconPrefix);
+    this._register_button('morphemRoot', 'Morphem Root Button', 'morphemRootCommand', IconRoot);
+    this._register_button('morphemSuffix', 'Morphem Suffix Button', 'morphemSuffixCommand', IconSuffix);
+    this._register_button('morphemEnding', 'Morphem Ending Button', 'morphemEndingCommand', IconEnding);
   }
 
   /**
@@ -89,36 +97,35 @@ export default class MorphemUI extends Plugin {
   }
 
   /**
-   * Morphem Ending button
+   * Morphem Base button
    */
-  _register_morphemEnding_button() {
+  _register_button(componentName, label, commandName, icon) {
     const editor = this.editor;
 
-    editor.ui.componentFactory.add('morphemEnding', (locale) => {
+    editor.ui.componentFactory.add(componentName, (locale) => {
       const buttonView = new ButtonView(locale);
 
       // Create the toolbar button.
       buttonView.set({
-        label: editor.t('Morphem Ending Button'),
-        icon: IconEnding,
+        label: editor.t(label),
+        icon,
         tooltip: true
       });
 
       // Bind button to the command.
       // The state on the button depends on the command values.
-      const command = editor.commands.get('morphemEndingCommand');
+      const command = editor.commands.get(commandName);
       buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
       buttonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
       // Execute the command when the button is clicked.
       this.listenTo(buttonView, 'execute', () => {
-        this.editor.execute('morphemEndingCommand', {});
+        this.editor.execute(commandName, {});
       });
 
       return buttonView;
     });
   }
-
 
   /**
    * Handles the selection specific cases (right before or after the element).

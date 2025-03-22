@@ -6,12 +6,44 @@
   white-space: nowrap;
 }
 
+.ck.ck-content span.morphem span.prefix {
+  display: inline-block;
+  background: url(../js/icons/prefix.svg) no-repeat center top;
+  background-size: 100% 1em;
+  padding: 0px 0.3em;
+}
+.ck.ck-content span.morphem span.root {
+  display: inline-block;
+  background: url(../js/icons/root.svg) no-repeat center top;
+  background-size: 100%;
+  padding: 0px 0.3em;
+}
+.ck.ck-content span.morphem span.suffix {
+  display: inline-block;
+  background: url(../js/icons/suffix.svg) no-repeat center top;
+  background-size: 100% 1em;
+  padding: 0px 0.3em;
+}
+.ck.ck-content span.morphem span.base {
+  position: relative;
+}
+.ck.ck-content span.morphem span.base::after {
+  content: "";
+  position: absolute;
+  height: 1.5px;
+  background-color: #000;
+  bottom: -0.25em;
+  width: 100%;
+  left: 0;
+}
+
 .ck.ck-content span.morphem span.ending {
   display: inline-block;
   border: 1px solid #000;
-  padding: 0 2px;
+  padding: 0px 0.3em;
 }
 
+/*
 .ck.ck-content span.morphem::before {
   font-size: 0.5em;
   content: "[ ";
@@ -27,3 +59,4 @@
   white-space: nowrap;
   color: #000;
 }
+*/

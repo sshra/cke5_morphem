@@ -56,7 +56,7 @@ export default class MorphemCommand extends Command {
       const selectedContent = model.getSelectedContent(selection);
 
       let elm = position.parent;
-      const found = this._findByElementName(elm, elemName);
+      const found = this._findByElementName(elm, [elemName]);
 
       if (found !== null) {
         // undo element
@@ -65,7 +65,7 @@ export default class MorphemCommand extends Command {
         // do element
         const allowedParent = model.schema.findAllowedParent(position, elemName);
         if (!allowedParent) {
-          console.warn(`Нельзя вставить ${elemName} в эту позицию!`);
+          console.warn(`Нельзя вставить ${elemName} в эту позицию - ${position.parent.name} !`);
           return;
         }
         this._wrap_content(elemName, selectedContent);
@@ -74,11 +74,11 @@ export default class MorphemCommand extends Command {
     });
   }
 
-  _findByElementName(elm, elementName) {
+  _findByElementName(elm, elementNames) {
     let found = null;
     while (elm != null) {
       if (elm.hasOwnProperty('name')) {
-        if (elm.name == elementName) {
+        if (elementNames.includes(elm.name)) {
           found = elm;
           break;
         }
@@ -106,6 +106,7 @@ export default class MorphemCommand extends Command {
       // Удаляем сам элемент
       writer.remove(element);
     });
+
   }
 
   _wrap_content(elementName, selectedContent) {
@@ -135,6 +136,19 @@ export default class MorphemCommand extends Command {
       }
       model.insertContent( El );
     });
+
+    model.change((writer) => {
+      // Получаем позицию в самом начале документа
+      const range = writer.createRange(
+        writer.createPositionAt(model.document.getRoot(), 0)
+      );
+
+      // Устанавливаем курсор в начало
+      writer.setSelection(range);
+    });
+
+    // Фокусируем редактор
+    this.editor.editing.view.focus();
   }
 
 

@@ -64,9 +64,6 @@ export default class MorphemEditing extends Plugin {
       new MorphemEndingCommand(this.editor),
     );
 
-
-
-
     editor.model.document.on('change:data', () => {
 //      this._removeEmptySpans(editor, editor.model.document.getRoot());
     });
@@ -392,13 +389,13 @@ export default class MorphemEditing extends Plugin {
           modelClass: classes,
         };
 
-        return conversionApi.writer.createElement( 'morphemsuffix', attrs );
+        return conversionApi.writer.createElement( 'morphemSuffix', attrs );
       },
     });
 
     // Model -> View.
     conversion.for('downcast').elementToElement({
-      model: 'morphemsuffix',
+      model: 'morphemSuffix',
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
           'class': 'suffix',
