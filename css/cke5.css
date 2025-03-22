@@ -5,6 +5,9 @@
   background: #e0e0e0;
   white-space: nowrap;
 }
+.ck.ck-content span.morphem + span.morphem {
+  margin-left: 5px;
+}
 
 .ck.ck-content span.morphem span.prefix {
   display: inline-block;

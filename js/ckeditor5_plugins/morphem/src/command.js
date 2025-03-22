@@ -60,7 +60,7 @@ export default class MorphemCommand extends Command {
 
       if (found !== null) {
         // undo element
-        this._unwrap_content(elm);
+        this._unwrap_content(found);
       } else {
         // do element
         const allowedParent = model.schema.findAllowedParent(position, elemName);
@@ -135,16 +135,6 @@ export default class MorphemCommand extends Command {
         writer.append(node, El);
       }
       model.insertContent( El );
-    });
-
-    model.change((writer) => {
-      // Получаем позицию в самом начале документа
-      const range = writer.createRange(
-        writer.createPositionAt(model.document.getRoot(), 0)
-      );
-
-      // Устанавливаем курсор в начало
-      writer.setSelection(range);
     });
 
     // Фокусируем редактор

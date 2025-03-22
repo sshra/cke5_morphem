@@ -46,7 +46,8 @@ export default class MorphemBaseCommand extends MorphemCommand {
 
       if (found !== null) {
         // undo element
-        this._unwrap_content(elm);
+        console.log('unwrap');
+        this._unwrap_content(found);
       } else {
         // do element
         const allowedParent = model.schema.findAllowedParent(position, elemName);
