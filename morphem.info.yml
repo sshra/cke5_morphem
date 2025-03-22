@@ -1,0 +1,10 @@
+name: CKEditor 5 Span Button
+type: module
+description: This plugin adds span button feature to the editor.
+core_version_requirement: ^10 || ^11
+package: CKEditor
+dependencies:
+  - drupal:ckeditor5
+ckeditor5-stylesheets:
+  - css/cke5.css
+
