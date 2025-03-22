@@ -1,6 +1,6 @@
-name: CKEditor 5 Span Button
+name: CKEditor 5 Morphems
 type: module
-description: This plugin adds span button feature to the editor.
+description: This plugin adds a seria of features to the editor.
 core_version_requirement: ^10 || ^11
 package: CKEditor
 dependencies:
