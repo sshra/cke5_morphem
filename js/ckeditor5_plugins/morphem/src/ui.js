@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { findByElementName } from './utils';
 import {
   ButtonView
 } from 'ckeditor5/src/ui';
@@ -17,6 +18,7 @@ import IconPrefix from '../../../icons/prefix-btn.svg';
 import IconRoot from '../../../icons/root-btn.svg';
 import IconSuffix from '../../../icons/suffix-btn.svg';
 import IconEnding from '../../../icons/ending-btn.svg';
+
 
 /**
  * The UI plugin. It introduces the `'bButton'` button and the forms.
@@ -40,7 +42,28 @@ export default class MorphemUI extends Plugin {
    */
   init() {
     this._addToolbarButtons();
-//    this._handleSelection();
+    this._enterProcessor();
+  }
+
+  _enterProcessor() {
+    const editor = this.editor;
+    const model = editor.model;
+
+    editor.commands.get('enter').on('execute', (evt, options) => {
+      const selection = model.document.selection;
+      const position = selection.getFirstPosition();
+      const parentElement = position.parent;
+
+      const elm = findByElementName(parentElement, ['morphem']);
+
+      if (elm !== null) {
+        evt.stop(); // Отменяем стандартное разбиение элемента
+        model.change(writer => {
+          writer.setSelection(writer.createPositionAfter(parentElement.parent), 'in');
+        });
+        editor.execute('enter');
+      }
+    }, { priority: 'high' }); // Ставим высокий приоритет, чтобы перехватить стандартное поведение
   }
 
   /**

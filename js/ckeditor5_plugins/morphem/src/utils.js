@@ -26,3 +26,17 @@ export function findElement(modelSelection, modelName) {
       .findAncestor(modelName);
   }
 }
+
+export function findByElementName(elm, elementNames) {
+  let found = null;
+  while (elm != null) {
+    if (elm.hasOwnProperty('name')) {
+      if (elementNames.includes(elm.name)) {
+        found = elm;
+        break;
+      }
+    }
+    elm = elm.parent;
+  }
+  return found;
+}

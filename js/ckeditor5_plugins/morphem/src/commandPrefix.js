@@ -4,6 +4,7 @@
  */
 
 import MorphemCommand from "./command";
+import { findByElementName } from './utils';
 
 /**
  * The morphem command.
@@ -20,7 +21,7 @@ export default class MorphemPrefixCommand extends MorphemCommand {
     const selection = this.editor.model.document.selection;
     const position = selection.getFirstPosition();
     let elm = position.parent;
-    const found = this._findByElementName(elm, ['morphem', 'morphemBase']);
+    const found = findByElementName(elm, ['morphem', 'morphemBase']);
 
     this.isEnabled = found !== null;
 
@@ -43,7 +44,7 @@ export default class MorphemPrefixCommand extends MorphemCommand {
       const selectedContent = model.getSelectedContent(selection);
 
       let elm = position.parent;
-      const found = this._findByElementName(elm, [elemName]);
+      const found = findByElementName(elm, [elemName]);
 
       if (found !== null) {
         // undo element

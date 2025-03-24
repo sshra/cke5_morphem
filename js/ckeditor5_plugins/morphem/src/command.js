@@ -4,6 +4,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
+import { findByElementName } from './utils';
 
 /**
  * The morphem command.
@@ -23,23 +24,6 @@ export default class MorphemCommand extends Command {
 
     // Init the empty command value.
     this.value = null;
-
-//     // Find the element in the selection.
-//     const { selection } = this.editor.model.document;
-//     const El = findElement(selection, 'morphem');
-//     if (!El) {
-//       return;
-//     }
-
-//     // Populate command value.
-//     this.value = {};
-
-//     // Process attributes
-//     for (const [attrKey, attrValue] of El.getAttributes()) {
-//       this.value[attrKey] = attrValue;
-//     }
-// console.log(this.value);
-
   }
 
   /**
@@ -56,11 +40,11 @@ export default class MorphemCommand extends Command {
       const selectedContent = model.getSelectedContent(selection);
 
       let elm = position.parent;
-      const found = this._findByElementName(elm, [elemName]);
+      const found = findByElementName(elm, [elemName]);
 
       if (found !== null) {
         // undo element
-        this._unwrap_content(found);
+        this._unwrap_content(found, ['morphemBase', 'morphemPrefix', 'morphemRoot', 'morphemSuffix', 'morphemEnding']);
       } else {
         // do element
         const allowedParent = model.schema.findAllowedParent(position, elemName);
@@ -74,39 +58,29 @@ export default class MorphemCommand extends Command {
     });
   }
 
-  _findByElementName(elm, elementNames) {
-    let found = null;
-    while (elm != null) {
-      if (elm.hasOwnProperty('name')) {
-        if (elementNames.includes(elm.name)) {
-          found = elm;
-          break;
-        }
-      }
-      elm = elm.parent;
+  _unwrap_content(element, elmsToRemove = []) {
+    const { model } = this.editor;
+    if (element.is('element')) {
+      elmsToRemove.push(element.name);
     }
-    return found;
+    model.change((writer) => {
+      this._unwrap_element(writer, element, elmsToRemove);
+    });
   }
 
-  _unwrap_content(element) {
-    const { model } = this.editor;
+  _unwrap_element(writer, element, elmsToRemove) {
+    // Получаем содержимое элемента
+    const children = Array.from(element.getChildren());
 
-    model.change((writer) => {
+    // Вставляем содержимое перед удаляемым элементом
+    for (const child of children) {
+      if (child.is('element') && elmsToRemove.includes(child.name)) {
+        this._unwrap_element(writer, child, elmsToRemove);
+      }
+    }
 
-      // Create a new morphem.
-      const position = writer.createPositionBefore(element);
-      // Получаем все дочерние элементы (и текст)
-      const children = Array.from(element.getChildren());
-
-      // Вставляем дочерние элементы перед удаляемым
-      children.forEach((child) => {
-        writer.insert(child, position);
-      });
-
-      // Удаляем сам элемент
-      writer.remove(element);
-    });
-
+    // Удаляем элемент
+    writer.unwrap(element);
   }
 
   _wrap_content(elementName, selectedContent) {

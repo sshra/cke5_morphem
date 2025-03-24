@@ -119,7 +119,6 @@ export default class MorphemEditing extends Plugin {
       ],
     });
 
-
     // base element.
     schema.register('morphemBase', {
       allowIn: [ 'morphem' ],
