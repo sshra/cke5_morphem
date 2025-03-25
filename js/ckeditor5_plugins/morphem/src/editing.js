@@ -14,6 +14,7 @@ import MorphemPrefixCommand from "./commandPrefix";
 import MorphemRootCommand from "./commandRoot";
 import MorphemSuffixCommand from "./commandSuffix";
 import MorphemEndingCommand from "./commandEnding";
+import MorphemPostfixCommand from "./commandPostfix";
 
 /**
  * The editing feature.
@@ -62,6 +63,11 @@ export default class MorphemEditing extends Plugin {
     editor.commands.add(
       'morphemEndingCommand',
       new MorphemEndingCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemPostfixCommand',
+      new MorphemPostfixCommand(this.editor),
     );
 
     editor.model.document.on('change:data', () => {
@@ -191,6 +197,23 @@ export default class MorphemEditing extends Plugin {
 
     // morphemRoot
     schema.register('morphemRoot', {
+      allowIn: [ 'morphem', 'morphemBase' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+      ],
+    });
+
+    // morphemPostfix
+    schema.register('morphemPostfix', {
       allowIn: [ 'morphem', 'morphemBase' ],
       inheritAllFrom: '$inline',
 
@@ -437,6 +460,45 @@ export default class MorphemEditing extends Plugin {
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
           'class': 'ending',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+
+    /************ POSTFIX ************/
+
+    // morphemPostfix. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'postfix' ],
+        attributes: {
+          ['class']: true,
+        }
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemPostfix', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemPostfix',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'postfix',
         };
         return writer.createContainerElement('span', htmlAttrs );
       }

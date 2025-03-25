@@ -27,9 +27,11 @@ export default class MorphemCommand extends Command {
   }
 
   /**
-   * @inheritDoc
+   * @inheritDoc / mode: toggle, on, off
    */
-  execute(values) {
+  execute(options = {} ) {
+    const mode = options.mode || 'toggle';
+
     const editor = this.editor;
     const { model } = editor;
     const elemName = 'morphem';
@@ -44,9 +46,15 @@ export default class MorphemCommand extends Command {
 
       if (found !== null) {
         // undo element
+        if (mode == 'on') {
+          return; // nothing to do
+        }
         this._unwrap_content(found, ['morphemBase', 'morphemPrefix', 'morphemRoot', 'morphemSuffix', 'morphemEnding']);
       } else {
         // do element
+        if (mode == 'off') {
+          return; // nothing to do
+        }
         const allowedParent = model.schema.findAllowedParent(position, elemName);
         if (!allowedParent) {
           console.warn(`Нельзя вставить ${elemName} в эту позицию - ${position.parent.name} !`);

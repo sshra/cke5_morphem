@@ -11,17 +11,17 @@ import { findByElementName } from './utils';
  *
  * @extends module:core/command~Command
  */
-export default class MorphemBaseCommand extends MorphemCommand {
+export default class MorphemPostfixCommand extends MorphemCommand {
 
   /**
    * @inheritDoc
    */
   refresh() {
-    // Base is allowed only inside of 'morphem'
+    // Prefix is allowed only inside of 'morphem'/"morphemBase"
     const selection = this.editor.model.document.selection;
     const position = selection.getFirstPosition();
     let elm = position.parent;
-    const found = findByElementName(elm, ['morphem']);
+    const found = findByElementName(elm, ['morphem', 'morphemBase']);
 
     this.isEnabled = found !== null;
 
@@ -30,14 +30,15 @@ export default class MorphemBaseCommand extends MorphemCommand {
   }
 
   /**
-   * @inheritDoc /modes : toggle, on, off
+   * @inheritDoc
    */
-  execute(mode = 'toggle') {
+  execute(values) {
     const editor = this.editor;
     const { model } = editor;
-    const elemName = 'morphemBase';
+    const elemName = 'morphemPostfix';
 
     model.change((writer) => {
+
       const selection = model.document.selection;
       const position = selection.getFirstPosition();
       const selectedContent = model.getSelectedContent(selection);
@@ -47,15 +48,9 @@ export default class MorphemBaseCommand extends MorphemCommand {
 
       if (found !== null) {
         // undo element
-        if (mode == 'on') {
-          return; // nothing to do
-        }
-        this._unwrap_content(found, ['morphemPrefix', 'morphemRoot', 'morphemSuffix']);
+        this._unwrap_content(found);
       } else {
         // do element
-        if (mode == 'off') {
-          return; // nothing to do
-        }
         const allowedParent = model.schema.findAllowedParent(position, elemName);
         if (!allowedParent) {
           console.warn(`Нельзя вставить ${elemName} в эту позицию!`);

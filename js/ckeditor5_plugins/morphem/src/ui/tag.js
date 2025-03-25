@@ -24,6 +24,28 @@ export default class TagView extends View {
   constructor( locale, tag, options = { attributes : {}}) {
     super( locale );
 
+    console.log(tag);
+    console.log(options);
+
+    if (options.text) {
+      this.setTemplate( {
+        tag,
+        attributes: options.attributes ? options.attributes : {},
+        children: options.children
+        ? options.children
+        : [ { text: options.text }]
+      });
+    } else {
+      this.setTemplate( {
+        tag,
+        attributes: options.attributes ? options.attributes : {},
+        children: options.children
+        ? options.children
+        : []
+      });
+
+    }
+
     this.setTemplate( {
       tag,
       attributes: options.attributes ? options.attributes : {},

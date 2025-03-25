@@ -46,20 +46,9 @@
   padding: 0px 0.3em;
 }
 
-/*
-.ck.ck-content span.morphem::before {
-  font-size: 0.5em;
-  content: "[ ";
+.ck.ck-content span.morphem span.postfix {
   display: inline-block;
-  white-space: nowrap;
-  color: #000;
+  background: url(../js/icons/postfix.svg) no-repeat center top;
+  background-size: 100% 1em;
+  padding: 0px 0.3em;
 }
-
-.ck.ck-content span.morphem::after {
-  font-size: 0.5em;
-  content: " ]";
-  display: inline-block;
-  white-space: nowrap;
-  color: #000;
-}
-*/

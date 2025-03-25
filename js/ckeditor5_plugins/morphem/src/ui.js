@@ -9,16 +9,12 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { findByElementName } from './utils';
+import FormView from './ui/formview';
 import {
-  ButtonView
+  ButtonView,
+  ContextualBalloon
 } from 'ckeditor5/src/ui';
 import Icon from '../../../icons/morphem-btn.svg';
-import IconBase from '../../../icons/base-btn.svg';
-import IconPrefix from '../../../icons/prefix-btn.svg';
-import IconRoot from '../../../icons/root-btn.svg';
-import IconSuffix from '../../../icons/suffix-btn.svg';
-import IconEnding from '../../../icons/ending-btn.svg';
-
 
 /**
  * The UI plugin. It introduces the `'bButton'` button and the forms.
@@ -34,15 +30,118 @@ export default class MorphemUI extends Plugin {
    * @inheritDoc
    */
   static get requires() {
-    return [  ];
+    return [ ContextualBalloon ];
   }
 
   /**
    * @inheritDoc
    */
   init() {
+    // Create the balloon.
+    this._balloon = this.editor.plugins.get( ContextualBalloon );
+    this.formView = this._createFormView();
+
     this._addToolbarButtons();
     this._enterProcessor();
+  }
+
+/**
+   * Creates the form view.
+   *
+   * @returns {FormView}
+   *   The form view instance.
+   *
+   * @private
+   */
+  _createFormView() {
+    // The FormView defined in src/ui/formview.js
+    const textFormatSettings = this.editor.config.get('morphem')
+    const formView = new FormView(this.editor.locale, textFormatSettings);
+
+     this.listenTo(formView.saveButtonView, 'execute', () => {
+      this._hideUI();
+    });
+
+    this.listenTo(formView.cancelButtonView, 'execute', () => {
+      this.editor.execute('morphemCommand', { mode: 'off' })
+      this._hideUI();
+    });
+
+    this.listenTo(formView.baseButtonView, 'execute', () => {
+      this.editor.execute('morphemBaseCommand')
+    });
+    this.listenTo(formView.prefixButtonView, 'execute', () => {
+      this.editor.execute('morphemPrefixCommand')
+    });
+    this.listenTo(formView.rootButtonView, 'execute', () => {
+      this.editor.execute('morphemRootCommand')
+    });
+    this.listenTo(formView.suffixButtonView, 'execute', () => {
+      this.editor.execute('morphemSuffixCommand')
+    });
+    this.listenTo(formView.endingButtonView, 'execute', () => {
+      this.editor.execute('morphemEndingCommand')
+    });
+    this.listenTo(formView.postfixButtonView, 'execute', () => {
+      this.editor.execute('morphemPostfixCommand')
+    });
+
+    return formView;
+  }
+
+  /**
+   * Adds the {@link #FormView} to the balloon and sets the form values.
+   *
+   * @private
+   */
+  _addFormView() {
+
+    if (this._balloon.hasView(this.formView)) {
+      this._balloon.remove(this.formView);
+    }
+
+    this._balloon.add({
+      view: this.formView,
+      position: this._getBalloonPositionData(),
+      balloonClassName: 'morphem_balloon',
+    });
+
+    this.editor.execute('morphemCommand', { mode: 'on' });
+
+    // Reset the focus to the first form element.
+    this.formView.focus();
+  }
+
+
+  /**
+   * Shows the UI.
+   *
+   * @private
+   */
+  _showUI() {
+    this._addFormView();
+  }
+
+
+  /**
+   * Hide the UI.
+   *
+   * @private
+   */
+  _hideUI() {
+    const formView = this.formView;
+
+    // Without this a new form contains the old values.
+    if (formView.element) {
+      formView.element.reset();
+    }
+
+    if (this._balloon.hasView(formView)) {
+      this._balloon.remove(formView);
+    }
+
+    // Focus the editing view after closing the form view.
+    this.editor.editing.view.focus();
   }
 
   _enterProcessor() {
@@ -75,11 +174,11 @@ export default class MorphemUI extends Plugin {
 
     this._register_morphem_button();
 
-    this._register_button('morphemBase', 'Morphem Base Button', 'morphemBaseCommand', IconBase);
-    this._register_button('morphemPrefix', 'Morphem Prefix Button', 'morphemPrefixCommand', IconPrefix);
-    this._register_button('morphemRoot', 'Morphem Root Button', 'morphemRootCommand', IconRoot);
-    this._register_button('morphemSuffix', 'Morphem Suffix Button', 'morphemSuffixCommand', IconSuffix);
-    this._register_button('morphemEnding', 'Morphem Ending Button', 'morphemEndingCommand', IconEnding);
+    // this._register_button('morphemBase', 'Morphem Base Button', 'morphemBaseCommand', IconBase);
+    // this._register_button('morphemPrefix', 'Morphem Prefix Button', 'morphemPrefixCommand', IconPrefix);
+    // this._register_button('morphemRoot', 'Morphem Root Button', 'morphemRootCommand', IconRoot);
+    // this._register_button('morphemSuffix', 'Morphem Suffix Button', 'morphemSuffixCommand', IconSuffix);
+    // this._register_button('morphemEnding', 'Morphem Ending Button', 'morphemEndingCommand', IconEnding);
   }
 
   /**
@@ -107,12 +206,13 @@ export default class MorphemUI extends Plugin {
 
       // Execute the command when the button is clicked.
       this.listenTo(buttonView, 'execute', () => {
+        this._showUI();
 
-        let values = {
+/*        let values = {
           modelClass:  textFormatSettings.morphemClass,
         };
         this.editor.execute('morphemCommand', values);
-
+*/
       });
 
       return buttonView;
@@ -170,6 +270,26 @@ export default class MorphemUI extends Plugin {
     });
   }
 
+  /**
+   * Gets balloon position.
+   *
+   * @returns {{target: (function(): *)}}
+   *
+   * @private
+   */
+  _getBalloonPositionData() {
+    const view = this.editor.editing.view;
+    const viewDocument = view.document;
+    let target = null;
 
+    // Set a target position by converting view selection range to DOM.
+    target = () => view.domConverter.viewRangeToDom(
+      viewDocument.selection.getFirstRange()
+    );
+
+    return {
+      target
+    };
+  }
 
 }
