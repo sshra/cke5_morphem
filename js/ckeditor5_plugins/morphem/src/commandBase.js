@@ -50,7 +50,7 @@ export default class MorphemBaseCommand extends MorphemCommand {
         if (mode == 'on') {
           return; // nothing to do
         }
-        this._unwrap_content(found, ['morphemPrefix', 'morphemRoot', 'morphemSuffix']);
+        this._unwrap_content(found, ['morphemPrefix', 'morphemRoot', 'morphemSuffix', 'morphemPostfix']);
       } else {
         // do element
         if (mode == 'off') {

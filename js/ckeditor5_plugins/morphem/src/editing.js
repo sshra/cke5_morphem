@@ -122,6 +122,7 @@ export default class MorphemEditing extends Plugin {
         'morphemRoot',
         'morphemPrefix',
         'morphemSuffix',
+        'morphemPostfix',
       ],
     });
 
@@ -141,6 +142,7 @@ export default class MorphemEditing extends Plugin {
         'morphemRoot',
         'morphemPrefix',
         'morphemSuffix',
+        'morphemPostfix',
       ],
     });
 
@@ -433,7 +435,7 @@ export default class MorphemEditing extends Plugin {
     conversion.for('upcast').elementToElement({
       view: {
         name: 'span',
-        classes: [ 'ending' ],
+        classes: [ 'end' ],
         attributes: {
           ['class']: true,
         }
@@ -459,7 +461,7 @@ export default class MorphemEditing extends Plugin {
       model: 'morphemEnding',
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
-          'class': 'ending',
+          'class': 'end',
         };
         return writer.createContainerElement('span', htmlAttrs );
       }

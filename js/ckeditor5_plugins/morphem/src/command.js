@@ -49,7 +49,7 @@ export default class MorphemCommand extends Command {
         if (mode == 'on') {
           return; // nothing to do
         }
-        this._unwrap_content(found, ['morphemBase', 'morphemPrefix', 'morphemRoot', 'morphemSuffix', 'morphemEnding']);
+        this._unwrap_content(found, ['morphemBase', 'morphemPrefix', 'morphemRoot', 'morphemSuffix', 'morphemEnding', 'morphemPostfix']);
       } else {
         // do element
         if (mode == 'off') {
