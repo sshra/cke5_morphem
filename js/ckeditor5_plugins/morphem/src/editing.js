@@ -283,7 +283,7 @@ export default class MorphemEditing extends Plugin {
     conversion.for('upcast').elementToElement({
       view: {
         name: 'span',
-        classes: [ 'base' ],
+        classes: [ 'basis' ],
         attributes: {
           ['class']: true,
         }
@@ -308,7 +308,7 @@ export default class MorphemEditing extends Plugin {
       model: 'morphemBase',
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
-          'class': 'base',
+          'class': 'basis',
         };
         return writer.createContainerElement('span', htmlAttrs );
       }
