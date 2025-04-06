@@ -245,9 +245,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ textFormatSettings.morphemClass ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -272,9 +269,6 @@ export default class MorphemEditing extends Plugin {
         view: {
           name: 'span',
           classes: [ textFormatSettings.morphemClassSyn ],
-          attributes: {
-            ['class']: true,
-          }
         },
         converterPriority: 'highest',
         model: (viewElement, conversionApi ) => {
@@ -311,9 +305,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'basis' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -348,9 +339,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'prefix' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -386,9 +374,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'root' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -424,9 +409,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'suffix' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -463,9 +445,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'end' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
@@ -502,9 +481,6 @@ export default class MorphemEditing extends Plugin {
       view: {
         name: 'span',
         classes: [ 'postfix' ],
-        attributes: {
-          ['class']: true,
-        }
       },
       converterPriority: 'highest',
       model: (viewElement, conversionApi ) => {
