@@ -265,6 +265,33 @@ export default class MorphemEditing extends Plugin {
       },
     });
 
+    if (textFormatSettings.morphemClassSyn.length) {
+
+      // Morphem. View -> Model.
+      conversion.for('upcast').elementToElement({
+        view: {
+          name: 'span',
+          classes: [ textFormatSettings.morphemClassSyn ],
+          attributes: {
+            ['class']: true,
+          }
+        },
+        converterPriority: 'highest',
+        model: (viewElement, conversionApi ) => {
+
+          let classes = viewElement.getAttribute('class');
+          if (!classes) {
+            return null;
+          }
+
+          var attrs = {
+            modelClass: classes,
+          };
+
+          return conversionApi.writer.createElement( 'morphem', attrs );
+        },
+      });
+    }
 
     // Morphem. Model -> View.
     conversion.for('downcast').elementToElement({

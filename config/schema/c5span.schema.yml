@@ -7,5 +7,8 @@ ckeditor5.plugin.morphem_morphem:
     morphemClass:
       type: string
       label: 'Morphem container class'
+    morphemClassSyn:
+      type: string
+      label: 'Morphem syn container class'
 
 

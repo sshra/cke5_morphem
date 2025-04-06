@@ -33,6 +33,14 @@ class Morphem extends CKEditor5PluginDefault implements CKEditor5PluginConfigura
       '#default_value' => $this->configuration['morphemClass'],
     ];
 
+    $form['morphemClassSyn'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Text Class', [], self::T_CONTEXT),
+      '#description' => $this->t('Old class of morphem container (span tag) to serve as .', [], self::T_CONTEXT),
+      '#default_value' => $this->configuration['morphemClassSyn'],
+    ];
+
+
     return $form;
   }
 
@@ -48,6 +56,7 @@ class Morphem extends CKEditor5PluginDefault implements CKEditor5PluginConfigura
    */
   public function submitConfigurationForm(array &$form, FormStateInterface $form_state) {
     $this->configuration['morphemClass'] = Html::getClass(trim($form_state->getValue('morphemClass')));
+    $this->configuration['morphemClassSyn'] = Html::getClass(trim($form_state->getValue('morphemClassSyn')));
   }
 
   /**
@@ -55,7 +64,8 @@ class Morphem extends CKEditor5PluginDefault implements CKEditor5PluginConfigura
    */
   public function defaultConfiguration() {
     return [
-      'morphemClass' => 'morphem',
+      'morphemClass' => 'long',
+      'morphemClassSyn' => 'morphem',
     ];
   }
 
