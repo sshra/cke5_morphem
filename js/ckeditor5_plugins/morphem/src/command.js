@@ -101,15 +101,21 @@ export default class MorphemCommand extends Command {
 
       // Проверяем, какие элементы можно вложить в El
       const validNodes = [];
+
+      // unwrap disallowed tags
+      for (const node of selectedContent.getChildren()) {
+        if (!model.schema.checkChild(El, node)) {
+          writer.unwrap(node);
+        }
+      }
+
+      // copy nodes
       for (const node of selectedContent.getChildren()) {
         if (model.schema.checkChild(El, node)) {
           validNodes.push(node);
         }
-        else {
-          let textNode = writer.createText(getTextFromNode(node))
-          validNodes.push(textNode)
-        }
       }
+
       // Если нет валидных элементов, ничего не делаем
       if (validNodes.length === 0) {
         console.warn(`В выделении нет элементов, которые можно вложить в ${elementName}!`);
