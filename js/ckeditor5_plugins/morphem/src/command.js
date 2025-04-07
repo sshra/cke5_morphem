@@ -4,7 +4,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findByElementName } from './utils';
+import { findByElementName, getTextFromNode } from './utils';
 
 /**
  * The morphem command.
@@ -104,6 +104,10 @@ export default class MorphemCommand extends Command {
       for (const node of selectedContent.getChildren()) {
         if (model.schema.checkChild(El, node)) {
           validNodes.push(node);
+        }
+        else {
+          let textNode = writer.createText(getTextFromNode(node))
+          validNodes.push(textNode)
         }
       }
       // Если нет валидных элементов, ничего не делаем

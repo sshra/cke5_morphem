@@ -40,3 +40,16 @@ export function findByElementName(elm, elementNames) {
   }
   return found;
 }
+
+export function getTextFromNode( node ) {
+  let text = '';
+
+  if (node.is('element')) {
+    for ( const child of node.getChildren() ) {
+      text += getTextFromNode( child )
+    }
+  } else if (node.is('text')) {
+    text += node.data;
+  }
+  return text;
+}
