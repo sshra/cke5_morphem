@@ -1,0 +1,15 @@
+{
+  "name" : "sshra/cke5_morphem",
+  "type": "drupal-module",
+  "require": {
+    "composer/installers": "^2.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true
+    }
+  }
+}
