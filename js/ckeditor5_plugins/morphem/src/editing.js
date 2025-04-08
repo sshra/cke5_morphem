@@ -104,7 +104,7 @@ export default class MorphemEditing extends Plugin {
 
     // parent element.
     schema.register('morphem', {
-      allowIn: [ 'paragraph' ],
+      allowIn: [ 'paragraph', 'htmlDivParagraph', '$container' ],
       inheritAllFrom: '$inline',
 
       isInline: true,
