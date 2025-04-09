@@ -123,6 +123,7 @@ export default class MorphemEditing extends Plugin {
         'morphemPrefix',
         'morphemSuffix',
         'morphemPostfix',
+        'dummy',
       ],
     });
 
@@ -143,6 +144,7 @@ export default class MorphemEditing extends Plugin {
         'morphemPrefix',
         'morphemSuffix',
         'morphemPostfix',
+        'dummy',
       ],
     });
 
