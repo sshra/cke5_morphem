@@ -79,6 +79,9 @@ export default class MorphemUI extends Plugin {
     this.listenTo(formView.suffixButtonView, 'execute', () => {
       this.editor.execute('morphemSuffixCommand')
     });
+    this.listenTo(formView.accentButtonView, 'execute', () => {
+      this.editor.execute('morphemAccentCommand')
+    });
     this.listenTo(formView.endingButtonView, 'execute', () => {
       this.editor.execute('morphemEndingCommand')
     });
@@ -171,14 +174,7 @@ export default class MorphemUI extends Plugin {
    * @private
    */
   _addToolbarButtons() {
-
     this._register_morphem_button();
-
-    // this._register_button('morphemBase', 'Morphem Base Button', 'morphemBaseCommand', IconBase);
-    // this._register_button('morphemPrefix', 'Morphem Prefix Button', 'morphemPrefixCommand', IconPrefix);
-    // this._register_button('morphemRoot', 'Morphem Root Button', 'morphemRootCommand', IconRoot);
-    // this._register_button('morphemSuffix', 'Morphem Suffix Button', 'morphemSuffixCommand', IconSuffix);
-    // this._register_button('morphemEnding', 'Morphem Ending Button', 'morphemEndingCommand', IconEnding);
   }
 
   /**

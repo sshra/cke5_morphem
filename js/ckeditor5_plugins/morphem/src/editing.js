@@ -13,6 +13,7 @@ import MorphemBaseCommand from "./commandBase";
 import MorphemPrefixCommand from "./commandPrefix";
 import MorphemRootCommand from "./commandRoot";
 import MorphemSuffixCommand from "./commandSuffix";
+import MorphemAccentCommand from "./commandAccent";
 import MorphemEndingCommand from "./commandEnding";
 import MorphemPostfixCommand from "./commandPostfix";
 
@@ -58,6 +59,11 @@ export default class MorphemEditing extends Plugin {
     editor.commands.add(
       'morphemSuffixCommand',
       new MorphemSuffixCommand(this.editor),
+    );
+
+    editor.commands.add(
+      'morphemAccentCommand',
+      new MorphemAccentCommand(this.editor),
     );
 
     editor.commands.add(
@@ -122,6 +128,7 @@ export default class MorphemEditing extends Plugin {
         'morphemRoot',
         'morphemPrefix',
         'morphemSuffix',
+        'morphemAccent',
         'morphemPostfix',
         'dummy',
       ],
@@ -143,6 +150,7 @@ export default class MorphemEditing extends Plugin {
         'morphemRoot',
         'morphemPrefix',
         'morphemSuffix',
+        'morphemAccent',
         'morphemPostfix',
         'dummy',
       ],
@@ -162,6 +170,7 @@ export default class MorphemEditing extends Plugin {
       allowChildren: [
         '$inline',
         '$text',
+        'morphemAccent',
       ],
     });
 
@@ -179,12 +188,31 @@ export default class MorphemEditing extends Plugin {
       allowChildren: [
         '$inline',
         '$text',
+        'morphemAccent',
       ],
     });
 
     // morphemSuffix
     schema.register('morphemSuffix', {
       allowIn: [ 'morphem', 'morphemBase' ],
+      inheritAllFrom: '$inline',
+
+      isInline: true,
+      isObject: false,
+      isSelectable: true,
+
+      allowAttributes: [
+      ],
+      allowChildren: [
+        '$inline',
+        '$text',
+        'morphemAccent',
+      ],
+    });
+
+    // morphemAccent
+    schema.register('morphemAccent', {
+      allowIn: [ 'morphem', 'morphemBase', '$inline','$text'],
       inheritAllFrom: '$inline',
 
       isInline: true,
@@ -213,6 +241,7 @@ export default class MorphemEditing extends Plugin {
       allowChildren: [
         '$inline',
         '$text',
+        'morphemAccent',
       ],
     });
 
@@ -230,6 +259,7 @@ export default class MorphemEditing extends Plugin {
       allowChildren: [
         '$inline',
         '$text',
+        'morphemAccent',
       ],
     });
 
@@ -434,6 +464,41 @@ export default class MorphemEditing extends Plugin {
       view: (modelElement, { writer }) => {
         let htmlAttrs = {
           'class': 'suffix',
+        };
+        return writer.createContainerElement('span', htmlAttrs );
+      }
+    });
+
+    /************ Accent ************/
+
+    // morphemAccent. View -> Model.
+    conversion.for('upcast').elementToElement({
+      view: {
+        name: 'span',
+        classes: [ 'accent' ],
+      },
+      converterPriority: 'highest',
+      model: (viewElement, conversionApi ) => {
+
+        let classes = viewElement.getAttribute('class');
+        if (!classes) {
+           return null;
+        }
+
+        var attrs = {
+          modelClass: classes,
+        };
+
+        return conversionApi.writer.createElement( 'morphemAccent', attrs );
+      },
+    });
+
+    // Model -> View.
+    conversion.for('downcast').elementToElement({
+      model: 'morphemAccent',
+      view: (modelElement, { writer }) => {
+        let htmlAttrs = {
+          'class': 'accent',
         };
         return writer.createContainerElement('span', htmlAttrs );
       }

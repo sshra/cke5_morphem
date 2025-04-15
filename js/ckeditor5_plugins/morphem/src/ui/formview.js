@@ -46,6 +46,9 @@ export default class FormView extends View {
     this.suffixButtonView = this._createButton(
       'Suffix', null, ['button', 'form-submit', 'ck-button-suffix']
     );
+    this.accentButtonView = this._createButton(
+      'Accent', null, ['button', 'form-submit', 'ck-button-accent']
+    );
     this.endingButtonView = this._createButton(
       'Ending', null, ['button', 'form-submit', 'ck-button-ending']
     );
@@ -86,6 +89,7 @@ export default class FormView extends View {
           style: 'margin: 5px'
         },
         children: [
+          this.accentButtonView,
           this.baseButtonView,
           this.prefixButtonView,
           this.rootButtonView,
